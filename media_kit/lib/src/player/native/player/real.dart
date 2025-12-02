@@ -1585,6 +1585,7 @@ class NativePlayer extends PlatformPlayer {
               String? language;
               bool? image;
               bool? albumart;
+              bool? isDefault;
               String? codec;
               String? decoder;
               int? w;
@@ -1637,6 +1638,9 @@ class NativePlayer extends PlatformPlayer {
                     case 'albumart':
                       albumart = map.values[j].u.flag > 0;
                       break;
+                    case 'default':
+                      isDefault = map.values[j].u.flag > 0;
+                      break;
                   }
                 }
                 if (map.values[j].format ==
@@ -1686,6 +1690,7 @@ class NativePlayer extends PlatformPlayer {
                       language,
                       image: image,
                       albumart: albumart,
+                      isDefault: isDefault,
                       codec: codec,
                       decoder: decoder,
                       w: w,
@@ -1709,6 +1714,7 @@ class NativePlayer extends PlatformPlayer {
                       language,
                       image: image,
                       albumart: albumart,
+                      isDefault: isDefault,
                       codec: codec,
                       decoder: decoder,
                       w: w,
@@ -1732,6 +1738,7 @@ class NativePlayer extends PlatformPlayer {
                       language,
                       image: image,
                       albumart: albumart,
+                      isDefault: isDefault,
                       codec: codec,
                       decoder: decoder,
                       w: w,
