@@ -80,6 +80,10 @@ support the player/video API in use; Windows hardware rendering needs this fork'
 DXGI extension. Runtime `libmpv:` and `LIBMPV_LIBRARY_PATH` overrides remain
 available, but do not change what the build hook packages.
 
+Video controller initialization does not wait for a Flutter render frame.
+System media commands and automatic queue transitions may create a controller
+while the app is backgrounded and frame scheduling is suspended.
+
 Windows destruction acknowledges completion only after texture unregistration,
 queued render work and `mpv_render_context_free` finish. This keeps deterministic
 player disposal from racing an asynchronous renderer teardown.

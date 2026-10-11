@@ -78,10 +78,7 @@ class VideoController {
     player.platform?.isVideoControllerAttached = true;
 
     () async {
-      final completer = Completer();
-      WidgetsBinding.instance.addPostFrameCallback((_) => completer.complete());
-      await completer.future;
-
+      // System media controls can create a controller while Flutter frames are suspended.
       try {
         if (NativeVideoController.supported) {
           final result = await NativeVideoController.create(
@@ -105,10 +102,7 @@ class VideoController {
           platform.complete(result);
           notifier.value = result;
         } else if (WebVideoController.supported) {
-          final result = await WebVideoController.create(
-            player,
-            configuration,
-          );
+          final result = await WebVideoController.create(player, configuration);
           platform.complete(result);
           notifier.value = result;
         }
@@ -153,15 +147,9 @@ class VideoController {
   /// Remember:
   /// * “Premature optimization is the root of all evil”
   /// * “With great power comes great responsibility”
-  Future<void> setSize({
-    int? width,
-    int? height,
-  }) async {
+  Future<void> setSize({int? width, int? height}) async {
     final instance = await platform.future;
-    return instance.setSize(
-      width: width,
-      height: height,
-    );
+    return instance.setSize(width: width, height: height);
   }
 
   /// A [Future] that completes when the first video frame has been rendered.

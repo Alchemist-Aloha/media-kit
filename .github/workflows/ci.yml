@@ -81,6 +81,12 @@ jobs:
           cache: true
       - run: flutter pub get
       - run: flutter test --reporter expanded
+      - name: Resolve video controller test dependencies
+        working-directory: media_kit_video
+        run: flutter pub get
+      - name: Test background video controller initialization
+        working-directory: media_kit_video
+        run: flutter test test/video_controller_background_test.dart --reporter expanded
 
   native-video-integration:
     name: Desktop video integration (${{ matrix.device }})
