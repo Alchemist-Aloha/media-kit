@@ -52,7 +52,7 @@ void main() {
         ..addFile(ArchiveFile('lib/arm64/libmpv.so', 3, [1, 2, 3]))
         ..addFile(ArchiveFile('lib/arm64/libhelper.so', 2, [4, 5]))
         ..addFile(ArchiveFile('include/client.h', 1, [6]));
-      final bytes = ZipEncoder().encode(archive)!;
+      final bytes = ZipEncoder().encode(archive);
       final checksum = sha256.convert(bytes).toString();
       final bundle = Bundle('android_arm64', {
         'url': 'https://invalid.example/native.zip',
@@ -89,7 +89,7 @@ void main() {
     () async {
       final archive = Archive()..addFile(ArchiveFile('../escaped', 1, [1]));
       final file = File(p.join(temp.path, 'bad.zip'));
-      await file.writeAsBytes(ZipEncoder().encode(archive)!);
+      await file.writeAsBytes(ZipEncoder().encode(archive));
       final output = await Directory(p.join(temp.path, 'out')).create();
       await expectLater(
         extractBundle(file, 'zip', output),
@@ -101,13 +101,11 @@ void main() {
 
   test('zip symlinks are skipped and escaping targets are rejected', () async {
     for (final target in ['libmpv.so', '../../escaped']) {
-      final link = ArchiveFile.string('lib/alias.so', target)
-        ..mode = 0xA1FF
-        ..isSymbolicLink = true
-        ..nameOfLinkedFile = target;
+      // A Unix symlink entry stores its target as content.
+      final link = ArchiveFile.string('lib/alias.so', target)..mode = 0xA1FF;
       final archive = Archive()..addFile(link);
-      final bytes = ZipEncoder().encode(archive)!;
-      // archive 3's encoder always marks ZIP entries as DOS, not Unix.
+      final bytes = ZipEncoder().encode(archive);
+      // The decoder only reads symlinks from entries made by Unix hosts.
       for (var i = 0; i < bytes.length - 5; i++) {
         if (bytes[i] == 0x50 &&
             bytes[i + 1] == 0x4B &&

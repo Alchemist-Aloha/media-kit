@@ -162,13 +162,13 @@ Future<void> extractBundle(
   if (format == 'zip') {
     final stream = InputFileStream(archive.path);
     try {
-      final decoded = ZipDecoder().decodeBuffer(stream);
+      final decoded = ZipDecoder().decodeStream(stream);
       for (final entry in decoded) {
         final name = checkedArchivePath(entry.name);
         final file = File(p.join(destination.path, name));
         if (entry.isSymbolicLink) {
           checkedArchivePath(
-            p.posix.join(p.posix.dirname(name), entry.nameOfLinkedFile),
+            p.posix.join(p.posix.dirname(name), entry.symbolicLink!),
           );
           continue; // SONAME binaries are regular files; aliases aren't bundled.
         }
