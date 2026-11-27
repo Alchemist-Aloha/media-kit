@@ -111,15 +111,16 @@ class WebPlayer extends PlatformPlayer {
             element.currentTime,
           );
 
-          // Clamp between current [Media]'s start & end.
+          // Clamp to the current [Media]'s end. [Media.start] only sets where
+          // playback begins, as on native: seeking before it is valid, and
+          // clamping to it would report the start position instead.
           try {
             if (_index >= 0 && _index < _playlist.length) {
-              final start = _playlist[_index].start?.inMilliseconds;
               final end = _playlist[_index].end?.inMilliseconds;
               if (position != null) {
                 position = Duration(
                   milliseconds: position.inMilliseconds.clamp(
-                    start ?? 0,
+                    0,
                     // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/MAX_SAFE_INTEGER
                     end ?? 9007199254740991,
                   ),
